@@ -19,7 +19,7 @@ def minOperations(n):
     operations = 0
     # Start with the smallest prime factor
     smallest_prime = 2
-    
+
     # Continue the loop until n becomes 1
     while n > 1:
         # Check if n is divisible by the smallest prime factor
