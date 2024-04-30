@@ -6,10 +6,11 @@ from sys import stdin
 
 # Initialize a dictionary to store status codes and their counts
 status_code_counts = {'200': 0, '301': 0, '400': 0, '401': 0,
-                     '403': 0, '404': 0, '405': 0, '500': 0}
+                      '403': 0, '404': 0, '405': 0, '500': 0}
 
 # Initialize a variable to store the total size of files
 total_file_size = 0
+
 
 def print_info():
     """
@@ -22,6 +23,7 @@ def print_info():
     for code, count in sorted(status_code_counts.items()):
         if count > 0:
             print("{}: {}".format(code, count))
+
 
 if __name__ == '__main__':
     try:
