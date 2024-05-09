@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-""" 
+"""
 Function to validate UTF-8 encoding
 """
 
