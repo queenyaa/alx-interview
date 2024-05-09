@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-"""
+""" 
 Function to validate UTF-8 encoding
 """
 
@@ -14,32 +14,18 @@ def validUTF8(data):
         True if data is valid UTF-8 encoding
         False if data is not valid UTF-8 encoding
     """
-    # Variable to track the number of bytes left for a multi-byte character
     bytes_left = 0
 
-    # Iterate through each byte in the data
-    for byte in data:
-        # If bytes_left is 0, this byte should be the start of a new character
-        if bytes_left == 0:
-            if byte >> 7 == 0:
-                bytes_left = 0
-            elif byte >> 5 == 0b110:
-                bytes_left = 1
-            elif byte >> 4 == 0b1110:
-                bytes_left = 2
-            elif byte >> 3 == 0b11110:
-                bytes_left = 3
-            else:
-                # Invalid start of a character
-                return False
-        else:
-            if byte >> 6 != 0b10:
+    for val in data:
+        byte = val & 255
+        if bytes_left:
+            if byte >> 6 != 2:
                 return False
             bytes_left -= 1
-
-            # If bytes_left is negative, there are too many continuation bytes
-            if bytes_left < 0:
-                return False
-
-    # If there are leftover bytes, it means the data is incomplete
+            continue
+        while (1 << abs(7 - bytes_left)) & byte:
+            bytes_left += 1
+        if bytes_left == 1 or bytes_left > 4:
+            return False
+        bytes_left = max(bytes_left - 1, 0)
     return bytes_left == 0
