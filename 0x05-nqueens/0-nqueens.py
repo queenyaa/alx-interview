@@ -5,9 +5,11 @@ non-attacking queens on an N×N chessboard.
 """
 import sys
 
+
 def n_queens(t_arr, col, i, n):
     """
-       Find all possible solutions for N-queen problem and return them in a list
+       Find all possible solutions for N-queen problem
+       and return them in a list
     """
     if i == n:
         t_arr.append(col[:])
@@ -19,6 +21,7 @@ def n_queens(t_arr, col, i, n):
             n_queens(t_arr, col, i + 1, n)
 
     return t_arr
+
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
