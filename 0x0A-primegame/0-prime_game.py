@@ -1,87 +1,50 @@
 #!/usr/bin/python3
-
-"""
-Prime Game between two players, given a set of
+""" Prime Game between two players, given a set of
 consecutive integers starting from 1 to n.
 """
 
 
 def sieve_of_eratosthenes(max_num):
-    """Eratosthenes sieve.
-
-    Args:
-        max_num (int): maximum number
-
-    Returns:
-        list: list of prime numbers
-    """
-    is_prime = [True] * (max_num + 1)
-    is_prime[0], is_prime[1] = False, False  # 0 and 1 are not prime numbers
+    """ Generate a list indicating prime status up to max_num. """
+    sieve = [True] * (max_num + 1)
+    sieve[0] = sieve[1] = False  # 0 and 1 are not prime numbers
     p = 2
     while p * p <= max_num:
-        if is_prime[p]:
+        if sieve[p]:
             for i in range(p * p, max_num + 1, p):
-                is_prime[i] = False
+                sieve[i] = False
         p += 1
-    return [p for p, prime in enumerate(is_prime) if prime]
+    return sieve
+
+
+def count_primes_up_to(sieve, max_num):
+    """ Count the number of primes up to each number in the range. """
+    prime_count = [0] * (max_num + 1)
+    count = 0
+    for i in range(max_num + 1):
+        if sieve[i]:
+            count += 1
+        prime_count[i] = count
+    return prime_count
+
 
 def isWinner(x, nums):
-    """
-    Determines if the second player will win.
-
-    Args:
-        x (int): number of rounds
-        nums (list): list of consecutive integers
-    """
+    """ Determines the winner of the Prime Game. """
     if not nums or x < 1:
         return None
 
     max_num = max(nums)
-    primes = sieve_of_eratosthenes(max_num)
-    memo = {}
+    sieve = sieve_of_eratosthenes(max_num)
+    prime_count = count_primes_up_to(sieve, max_num)
 
-    def game_winner(n):
-        """
-        Determines if the second player will win.
-
-        Args:
-            n (int): number
-
-        Returns:
-            str: Maria or Ben
-        """
-        if n == 1:
-            return "Ben"
-        if n in memo:
-            return memo[n]
-
-        remaining_numbers = set(range(1, n + 1))
-        available_primes = [p for p in primes if p <= n]
-        turns = 0
-
-        while available_primes:
-            turns += 1
-            current_prime = available_primes.pop(0)
-            multiples = set(range(current_prime, n + 1, current_prime))
-            remaining_numbers -= multiples
-            available_primes = [p for p in available_primes if p in remaining_numbers]
-
-        winner = "Maria" if turns % 2 == 1 else "Ben"
-        memo[n] = winner
-        return winner
-
-    maria_wins, ben_wins = 0, 0
-
+    maria_wins = 0
     for n in nums:
-        winner = game_winner(n)
-        if winner == "Maria":
+        if prime_count[n] % 2 == 1:
             maria_wins += 1
-        else:
-            ben_wins += 1
 
-    if maria_wins > ben_wins:
-        return "Maria"
-    elif ben_wins > maria_wins:
-        return "Ben"
-    else:
+    if maria_wins * 2 == len(nums):
         return None
+    elif maria_wins * 2 > len(nums):
+        return "Maria"
+    else:
+        return "Ben"
